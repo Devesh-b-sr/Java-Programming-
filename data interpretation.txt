@@ -1,0 +1,155 @@
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+
+public class AbsoluteCinemaApp extends JFrame {
+
+    // Absolute Cinema Color Palette
+    private final Color BG_MAIN = new Color(13, 17, 23);
+    private final Color BG_SIDEBAR = new Color(22, 27, 34);
+    private final Color BG_CARD = new Color(33, 38, 45);
+    private final Color ACCENT_BLUE = new Color(47, 129, 247);
+    private final Color TEXT_PRIMARY = new Color(201, 209, 217);
+
+    public AbsoluteCinemaApp() {
+        setTitle("Absolute Cinema - Desktop Edition");
+        setSize(1200, 800);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // 1. Build the Sidebar (WEST)
+        add(createSidebar(), BorderLayout.WEST);
+
+        // 2. Build the Main Content Area (CENTER)
+        JPanel mainContent = new JPanel(new BorderLayout());
+        mainContent.setBackground(BG_MAIN);
+        mainContent.add(createHeader(), BorderLayout.NORTH);
+        mainContent.add(createMediaGrid(), BorderLayout.CENTER);
+
+        add(mainContent, BorderLayout.CENTER);
+    }
+
+    private JPanel createSidebar() {
+        JPanel sidebar = new JPanel();
+        sidebar.setPreferredSize(new Dimension(250, 800));
+        sidebar.setBackground(BG_SIDEBAR);
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Brand Title
+        JLabel brand = new JLabel("ABSOLUTE CINEMA");
+        brand.setFont(new Font("Arial", Font.BOLD, 20));
+        brand.setForeground(Color.WHITE);
+        brand.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sidebar.add(brand);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 40)));
+
+        // Navigation Buttons
+        String[] navItems = {"Discover", "Movies", "Web Series", "Games", "Books"};
+        for (String item : navItems) {
+            JButton btn = new JButton(item);
+            btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            btn.setBackground(BG_SIDEBAR);
+            btn.setForeground(TEXT_PRIMARY);
+            btn.setFocusPainted(false);
+            btn.setBorderPainted(false);
+            btn.setFont(new Font("Arial", Font.PLAIN, 16));
+            btn.setHorizontalAlignment(SwingConstants.LEFT);
+            
+            // Hover effect
+            btn.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    btn.setForeground(ACCENT_BLUE);
+                }
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    btn.setForeground(TEXT_PRIMARY);
+                }
+            });
+            sidebar.add(btn);
+            sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
+        return sidebar;
+    }
+
+    private JPanel createHeader() {
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        header.setBackground(BG_MAIN);
+        header.setBorder(new EmptyBorder(20, 30, 20, 30));
+
+        JTextField searchBar = new JTextField(40);
+        searchBar.setPreferredSize(new Dimension(400, 35));
+        searchBar.setBackground(BG_CARD);
+        searchBar.setForeground(Color.WHITE);
+        searchBar.setCaretColor(Color.WHITE);
+        searchBar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(48, 54, 61)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+
+        header.add(searchBar);
+        return header;
+    }
+
+    private JScrollPane createMediaGrid() {
+        // Grid Layout: Auto rows, 4 columns, 20px gaps
+        JPanel gridPanel = new JPanel(new GridLayout(0, 4, 20, 20));
+        gridPanel.setBackground(BG_MAIN);
+        gridPanel.setBorder(new EmptyBorder(0, 30, 30, 30));
+
+        // Generate Dummy Cards
+        for (int i = 1; i <= 12; i++) {
+            gridPanel.add(createMediaCard("Media Title " + i));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(gridPanel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Smooth scrolling
+        return scrollPane;
+    }
+
+    private JPanel createMediaCard(String title) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(BG_CARD);
+        card.setPreferredSize(new Dimension(200, 300));
+        card.setBorder(BorderFactory.createLineBorder(new Color(48, 54, 61)));
+
+        // Poster Placeholder
+        JPanel poster = new JPanel();
+        poster.setBackground(new Color(17, 17, 17));
+        
+        // Info Section
+        JPanel info = new JPanel(new BorderLayout());
+        info.setBackground(BG_CARD);
+        info.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        
+        JLabel yearLabel = new JLabel("2026");
+        yearLabel.setForeground(TEXT_PRIMARY);
+
+        info.add(titleLabel, BorderLayout.NORTH);
+        info.add(yearLabel, BorderLayout.SOUTH);
+
+        card.add(poster, BorderLayout.CENTER);
+        card.add(info, BorderLayout.SOUTH);
+
+        return card;
+    }
+
+    public static void main(String[] args) {
+        // Set Look and Feel to make it look modern
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new AbsoluteCinemaApp().setVisible(true);
+        });
+    }
+}
